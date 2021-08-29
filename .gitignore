@@ -1,0 +1,5 @@
+node_modules/
+lib/
+*.bs.js
+.DS_STORE
+.merlin
