@@ -13,6 +13,7 @@
   "bs-dependencies": [
       "rescript-webapi",
       "@ryyppy/rescript-promise",
+      "@n-arms/stalwart"
   ],
   "warnings": {
     "error" : "+101"

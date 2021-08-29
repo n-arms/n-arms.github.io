@@ -2,7 +2,7 @@
   "name": "@n-arms/n-arms.github.io",
   "version": "0.0.1",
   "scripts": {
-    "build": "rescript && python3 -m http.server 8888",
+    "build": "rescript build -with-deps && bash fix-stalwart.sh && python3 -m http.server 8888",
     "clean": "rescript clean -with-deps",
     "start": "rescript build -w"
   },
