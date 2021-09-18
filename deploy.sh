@@ -14,4 +14,4 @@ rm -f ./bsconfig.json
 rm -f ./package.json
 
 git add .
-git commit -am "desploy.sh: deploy to gh-pages"
+git commit -am "deploy.sh: deploy to gh-pages"
