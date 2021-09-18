@@ -2,9 +2,8 @@
   "name": "@n-arms/n-arms.github.io",
   "version": "0.0.1",
   "scripts": {
-    "build": "rescript build -with-deps && bash fix-stalwart.sh && python3 -m http.server 8888",
-    "clean": "rescript clean -with-deps",
-    "start": "rescript build -w"
+    "build": "rescript build -with-deps && npx webpack",
+    "clean": "rescript clean -with-deps"
   },
   "keywords": [
     "rescript"
@@ -15,6 +14,8 @@
     "@n-arms/stalwart": "github:n-arms/stalwart",
     "@ryyppy/rescript-promise": "^2.1.0",
     "rescript": "^9.1.4",
-    "rescript-webapi": "^0.1.1"
+    "rescript-webapi": "^0.1.1",
+    "webpack": "^5.53.0",
+    "webpack-cli": "^4.8.0"
   }
 }
