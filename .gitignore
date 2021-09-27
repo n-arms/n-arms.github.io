@@ -1,7 +1,0 @@
-node_modules/
-lib/
-*.js
-dist/
-.DS_STORE
-.merlin
-!webpack.config.js
