@@ -14,11 +14,19 @@ pub enum ParseError {
     ExpectedStar,
     ExpectedHash,
     ExpectedBacktick,
+    ExpectedListEntry,
     Todo
 }
 
 pub fn parse_markdown<'a>(text: &'a [char]) -> Result<Vec<MarkNode>, ParseError> {
-    todo!()
+    let mut rest = text;
+    let mut nodes = Vec::new();
+    while rest.len() > 0 {
+        let (node, text) = parse_node(rest)?;
+        rest = strip_while(vec![' ', '\n'], text);
+        nodes.push(node);
+    }
+    Ok(nodes)
 }
 
 fn strip_while<'a>(chars: Vec<char>, text: &'a [char]) -> &'a [char] {
@@ -145,7 +153,22 @@ fn parse_node<'a>(text: &'a [char]) -> Result<(MarkNode, &'a [char]), ParseError
 }
 
 fn parse_ulist<'a>(text: &'a [char]) -> Result<(Vec<MarkLiteral>, &'a [char]), ParseError> {
-    Err(ParseError::Todo)
+    let mut nodes = Vec::new();
+    let mut rest = text;
+    while rest.len() > 1 && rest[0] == '-' {
+        match parse_lit(strip_while(vec![' '], &rest[1..])) {
+            Ok((node, text)) => {
+                rest = strip_while(vec!['\n', ' '], text);
+                nodes.push(node);
+            },
+            Err(e) => return Err(e),
+        }
+    }
+    if nodes.len() == 0 {
+        Err(ParseError::ExpectedListEntry)
+    } else {
+        Ok((nodes, rest))
+    }
 }
 
 fn parse_olist<'a>(text: &'a [char]) -> Result<(Vec<MarkLiteral>, &'a [char]), ParseError> {
@@ -233,5 +256,15 @@ mod test {
         assert_eq!(
             parse_node(&['#', '1', '\n', '2']),
             Ok((Lit(Header(String::from("1"), 1)), vec!['\n', '2'].as_slice())));
+        assert_eq!(
+            parse_node(&['-', ' ', '1', '\n', '-', ' ', '2', '\n', '3']),
+            Ok((UnOrdList(vec![PlainText(String::from("1")), PlainText(String::from("2"))]), vec!['3'].as_slice())));
+    }
+
+    #[test]
+    fn complete_parse() {
+        assert_eq!(
+            parse_markdown(&['#', '1', '\n', '#', '2', '\n', '3']),
+            Ok(vec![Lit(Header(String::from("1"), 1)), Lit(Header(String::from("2"), 1)), Lit(PlainText(String::from("3")))]));
     }
 }
