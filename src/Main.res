@@ -7,6 +7,7 @@ open Stalwart.Mainloop
 type button
     = BlogButton
     | MainButton
+    | GitHubFooter
 
 type appMsg
     = HeaderHover(button)
@@ -39,23 +40,28 @@ let getContent = hash =>
         ])
     }
 
-let alternate = content => {
-    let color = ref("#ffffff")
+let alternate : array<(html<'a>, html<'a>)> => array<html<'a>> = content => {
+    let side = ref(false)
     content
-    -> Array.map(elem => {
-        if color.contents == "#ffffff" {
-            color := "#e6e6e6"
-        } else {
-            color := "#ffffff"
-        }
+    -> Array.map(((picture, text)) => {
+        side := !side.contents
         div([
             styles([
-                ("background-color", color.contents),
-                ("padding", "1em")
+                ("background-color", if side.contents {
+                    "#ffffff"
+                } else {
+                    "#e6e6e6"
+                }),
+                ("padding", "1em"),
+                ("display", "flex")
             ])
-        ], [
-            elem
-        ])
+        ], if side.contents {[
+            picture,
+            text
+        ]} else {[
+            text,
+            picture
+        ]})
     })
 }
 
@@ -73,17 +79,18 @@ let header = state =>
         h1(if state.hover == Some(MainButton) {[
             styles([
                 ("margin", "0.25em"),
-                ("margin-left", "3em"),
+                ("margin-left", "2em"),
             ]),
             onMouseOut(HeaderUnHover(MainButton)),
             onClick(HeaderClick(MainButton))
         ]} else {[
             styles([
                 ("margin", "0.25em"),
-                ("margin-left", "3em"),
+                ("margin-left", "2em"),
                 ("color", "white")
             ]),
-            onMouseOver(HeaderHover(MainButton))
+            onMouseOver(HeaderHover(MainButton)),
+            onClick(HeaderClick(MainButton))
         ]}, [text("n-arms")]),
 
         p(if state.hover == Some(BlogButton) {[
@@ -102,19 +109,44 @@ let header = state =>
                 ("font-size", "1.2em")
             ]),
             onMouseOver(HeaderHover(BlogButton)),
+            onClick(HeaderClick(BlogButton)),
         ]}, [text("blog")])
     ])
 
-let title = _ => 
+let footer = state =>
     div([
-        props([
-            ("id", "header")
-        ]),
         styles([
             ("background-color", "#2f302f"),
-            ("padding-left", "1em"),
-            ("padding-top", "3em"),
-            ("padding-bottom", "3em"),
+            ("padding", "2em"),
+            ("display", "flex"),
+            ("justify-content", "center"),
+        ])
+    ], [
+        a(if state.hover == Some(GitHubFooter) {[
+            onMouseOut(HeaderUnHover(GitHubFooter)),
+            props([
+                ("href", "https://github.com/n-arms")
+            ]),
+            styles([
+                ("color", "#bee67e"),
+                ("text-decoration", "none")
+            ])
+        ]} else {[
+            onMouseOver(HeaderHover(GitHubFooter)),
+            props([
+                ("href", "https://github.com/n-arms")
+            ]),
+            styles([
+                ("color", "white"),
+                ("text-decoration", "none")
+            ])
+        ]}, [text("find me on GitHub")])
+    ])
+
+let title = _ =>
+    div([
+        styles([
+            ("background-color", "#2f302f"),
             ("display", "flex"),
             ("flex-wrap", "wrap"),
             ("justify-content", "center"),
@@ -122,44 +154,37 @@ let title = _ =>
     ], [
         div([
             styles([
-                ("flex", "0 0 20em"),
-                ("width", "0 0 20em"),
-                ("margin", "0"),
-                ("padding", "0"),
+                ("padding-left", "2rem"),
             ])
         ], [
             h1([
                 styles([
                     ("color", "#bee67e"),
-                    ("font-size", "6em"),
-                    ("width", "0 0 20em"),
-                    ("margin", "0em"),
+                    ("font-size", "5em"),
                 ])
             ], [
                 text("n-arms")
             ]),
             p([
                 styles([
-                    ("font-size", "25px"),
-                    ("margin-bottom", "0em"),
-                    ("color", "white")
+                    ("color", "white"),
+                    ("font-size", "2em")
                 ])
             ], [
-                text("the coolest")
+                text("a high school student trying to find their way in the world of tech")
             ])
         ]),
         div([
             styles([
-                ("margin", "0"),
-                ("padding", "0"),
-                ("flex", "0 0 10em"),
-                ("min-width", "0 0 10em"),
-                ("font-size", "40px"),
+                ("padding-left", "2rem"),
+                ("display", "flex"),
+                ("justify-content", "center"),
+                ("align-content", "center"),
+                ("flex-direction", "column"),
                 ("color", "white"),
-                ("margin-top", "0.5em")
+                ("font-size", "1.25em"),
             ])
         ], [
-            text("guess what, he is pretty cool")
         ])
     ])
 
@@ -169,28 +194,46 @@ let main = state => div([], [
         props([
             ("id", "content")
         ])
-    ], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    -> Js.Array2.map(n => 
-        div([
-            styles([
-                ("padding", "3em")
-            ])
-        ], [
-            text(`thing ${n -> Int.toString}`)
-        ]))
-    -> alternate)
-])
+    ], [
+        ("f5 run file", "A plugin for the atom text editor that allows you to run your code just by hitting f5", text("img here")),
+        ("Stalwart", "The custom frontend web framework that powers this website. Inspired by elm's html library", text("img here")),
+        ("Neural Combinators", "Experiments with combining neural networks and functional programming", text("img here")),
+        ("CBreakable", "A lightweight tool for building terminal user interfaces in golang", text("img here"))
+    ] -> Array.map(((title, content, img)) => (div([
+        styles([
+            ("padding-left", "2rem"),
+            ("flex-basis", "auto"),
+            ("width", "40%")
+        ])
+    ], [
+        h1([], [text(title)]),
+        p([], [text(content)])
+    ]), div([
+        styles([
+            ("padding-left", "2rem"),
+            ("flex-basis", "auto"),
+            ("width", "40%")
+        ])
+    ], [img]))) -> alternate
+)])
 
 let blog = _ => div([], 
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    -> Js.Array2.map(n =>
+    -> Js.Array2.map(n => (
         div([
             styles([
                 ("padding", "3em")
             ])
         ], [
             text(`blog article ${n -> Int.toString}`)
-        ]))
+        ]),
+        div([
+            styles([
+                ("padding", "3em")
+            ])
+        ], [
+            text("image")
+        ])))
     -> alternate)
 
 
@@ -205,7 +248,8 @@ let view = state => div([
     switch state.page {
         | BlogButton => blog(state)
         | MainButton => main(state)
-    }
+    },
+    footer(state)
 ])
 
 

@@ -5,7 +5,7 @@
     "build": "rescript build -with-deps && npx webpack",
     "clean": "rescript clean -with-deps",
     "check": "rescript build",
-    "test": "npm run build && python3 -m http.server 8000"
+    "test": "npm run build && python3 -m http.server 8080"
   },
   "keywords": [
     "rescript"

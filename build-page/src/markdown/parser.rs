@@ -40,7 +40,7 @@ fn strip_while<'a>(chars: Vec<char>, text: &'a [char]) -> &'a [char] {
 fn parse_plain<'a>(text: &'a [char]) -> Result<(String, &'a [char]), ParseError> {
     let mut rest = text;
     let mut out = String::new();
-    while rest.len() > 0 && rest[0] != '#' && rest[0] != '`' && rest[0] != '*' && rest[0] != '\n' {
+    while rest.len() > 0 && rest[0] != '#' && rest[0] != '`' && rest[0] != '*' && rest[0] != '\n' && rest[0] != '-' {
         out.push(rest[0]);
         rest = &rest[1..];
     }
@@ -152,17 +152,23 @@ fn parse_node<'a>(text: &'a [char]) -> Result<(MarkNode, &'a [char]), ParseError
         })
 }
 
-fn parse_ulist<'a>(text: &'a [char]) -> Result<(Vec<MarkLiteral>, &'a [char]), ParseError> {
+fn parse_ulist<'a>(text: &'a [char]) -> Result<(Vec<Vec<MarkLiteral>>, &'a [char]), ParseError> {
     let mut nodes = Vec::new();
     let mut rest = text;
     while rest.len() > 1 && rest[0] == '-' {
-        match parse_lit(strip_while(vec![' '], &rest[1..])) {
-            Ok((node, text)) => {
-                rest = strip_while(vec!['\n', ' '], text);
-                nodes.push(node);
-            },
-            Err(e) => return Err(e),
+        let mut current = Vec::new();
+        rest = strip_while(vec![' '], &rest[1..]);
+        while rest.len() > 1 && rest[0] != '-' { 
+            match parse_lit(rest) {
+                Ok((node, text)) =>{
+                    rest = strip_while(vec![' '], text);
+                    current.push(node);
+                },
+                Err(e) => return Err(e)
+            }
+            rest = strip_while(vec![' ', '\n'], &rest[1..]);
         }
+        nodes.push(current);
     }
     if nodes.len() == 0 {
         Err(ParseError::ExpectedListEntry)
@@ -171,7 +177,7 @@ fn parse_ulist<'a>(text: &'a [char]) -> Result<(Vec<MarkLiteral>, &'a [char]), P
     }
 }
 
-fn parse_olist<'a>(text: &'a [char]) -> Result<(Vec<MarkLiteral>, &'a [char]), ParseError> {
+fn parse_olist<'a>(text: &'a [char]) -> Result<(Vec<Vec<MarkLiteral>>, &'a [char]), ParseError> {
     Err(ParseError::Todo)
 }
 
@@ -258,7 +264,7 @@ mod test {
             Ok((Lit(Header(String::from("1"), 1)), vec!['\n', '2'].as_slice())));
         assert_eq!(
             parse_node(&['-', ' ', '1', '\n', '-', ' ', '2', '\n', '3']),
-            Ok((UnOrdList(vec![PlainText(String::from("1")), PlainText(String::from("2"))]), vec!['3'].as_slice())));
+            Ok((UnOrdList(vec![vec![PlainText(String::from("1"))], vec![PlainText(String::from("2"))]]), vec!['3'].as_slice())));
     }
 
     #[test]

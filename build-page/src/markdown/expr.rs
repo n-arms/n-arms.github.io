@@ -13,7 +13,7 @@ pub enum MarkLiteral {
 impl fmt::Display for MarkLiteral {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::PlainText(t) => write!(f, "<p>{}</p>", t),
+            Self::PlainText(t) => write!(f, "{}", t),
             Self::Bold(t) => write!(f, "<b>\n{}\n</b>", t),
             Self::Italics(t) => write!(f, "<i>\n{}\n</i>", t),
             Self::Header(t, s) => write!(f, "<h{}>\n{}\n</h{}>", s, t, s),
@@ -39,8 +39,8 @@ impl fmt::Display for MarkLiteral {
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum MarkNode {
-    UnOrdList(Vec<MarkLiteral>),
-    OrdList(Vec<MarkLiteral>),
+    UnOrdList(Vec<Vec<MarkLiteral>>),
+    OrdList(Vec<Vec<MarkLiteral>>),
     Lit(MarkLiteral)
 }
 
@@ -50,15 +50,19 @@ impl fmt::Display for MarkNode {
             Self::Lit(l) => write!(f, "{}", l),
             Self::UnOrdList(ulist) => {
                 write!(f, "<ul>\n")?;
-                for lit in ulist {
-                    write!(f, "<li>\n{}\n</li>\n", lit)?;
+                for lits in ulist {
+                    for lit in lits {
+                        write!(f, "<li>\n{}\n</li>\n", lit)?;
+                    }
                 }
                 write!(f, "</ul>")
             }
             Self::OrdList(ulist) => {
                 write!(f, "<ol>\n")?;
-                for lit in ulist {
-                    write!(f, "<li>\n{}\n</li>\n", lit)?;
+                for lits in ulist {
+                    for lit in lits {
+                        write!(f, "<li>\n{}\n</li>\n", lit)?;
+                    }
                 }
                 write!(f, "</ol>")
             }
