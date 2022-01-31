@@ -3,21 +3,8 @@ open Webapi.Dom
 open Stalwart.Attribute
 open Stalwart.Node
 open Stalwart.Mainloop 
-
-type button
-    = BlogButton
-    | MainButton
-    | GitHubFooter
-
-type appMsg
-    = HeaderHover(button)
-    | HeaderUnHover(button)
-    | HeaderClick(button)
-
-type appState = {
-    page: button,
-    hover: option<button>
-}
+open Util
+open State
 
 let root = 
     document
@@ -40,31 +27,6 @@ let getContent = hash =>
         ])
     }
 
-let alternate : array<(html<'a>, html<'a>)> => array<html<'a>> = content => {
-    let side = ref(false)
-    content
-    -> Array.map(((picture, text)) => {
-        side := !side.contents
-        div([
-            styles([
-                ("background-color", if side.contents {
-                    "#ffffff"
-                } else {
-                    "#e6e6e6"
-                }),
-                ("padding", "1em"),
-                ("display", "flex")
-            ])
-        ], if side.contents {[
-            picture,
-            text
-        ]} else {[
-            text,
-            picture
-        ]})
-    })
-}
-
 let header = state =>
     div([
         styles([
@@ -76,41 +38,19 @@ let header = state =>
             ("display", "flex")
         ])
     ], [
-        h1(if state.hover == Some(MainButton) {[
+        link(h1([
             styles([
                 ("margin", "0.25em"),
                 ("margin-left", "2em"),
             ]),
-            onMouseOut(HeaderUnHover(MainButton)),
-            onClick(HeaderClick(MainButton))
-        ]} else {[
-            styles([
-                ("margin", "0.25em"),
-                ("margin-left", "2em"),
-                ("color", "white")
-            ]),
-            onMouseOver(HeaderHover(MainButton)),
-            onClick(HeaderClick(MainButton))
-        ]}, [text("n-arms")]),
-
-        p(if state.hover == Some(BlogButton) {[
-            onMouseOut(HeaderUnHover(BlogButton)),
-            onClick(HeaderClick(BlogButton)),
+        ], [text("n-arms")]), None, MainButton, state, false, false),
+        link(p([
             styles([
                 ("margin", "1em"),
                 ("margin-left", "3em"),
                 ("font-size", "1.2em")
             ])
-        ]} else {[
-            styles([
-                ("margin", "1em"),
-                ("margin-left", "3em"),
-                ("color", "white"),
-                ("font-size", "1.2em")
-            ]),
-            onMouseOver(HeaderHover(BlogButton)),
-            onClick(HeaderClick(BlogButton)),
-        ]}, [text("blog")])
+        ], [text("blog")]), None, BlogButton, state, false, false),
     ])
 
 let footer = state =>
@@ -120,27 +60,27 @@ let footer = state =>
             ("padding", "2em"),
             ("display", "flex"),
             ("justify-content", "center"),
+            ("flex-direction", "column")
         ])
     ], [
-        a(if state.hover == Some(GitHubFooter) {[
-            onMouseOut(HeaderUnHover(GitHubFooter)),
-            props([
-                ("href", "https://github.com/n-arms")
-            ]),
-            styles([
-                ("color", "#bee67e"),
-                ("text-decoration", "none")
+        outline([
+            centered([
+                content("find me on"),
+                inlineLink(text(" GitHub "), Some("https://github.com/n-arms"), GitHubFooter, state)
             ])
-        ]} else {[
-            onMouseOver(HeaderHover(GitHubFooter)),
-            props([
-                ("href", "https://github.com/n-arms")
-            ]),
-            styles([
-                ("color", "white"),
-                ("text-decoration", "none")
+        ]),
+        outline([
+            centered([
+            content("this website is powered by the "),
+            inlineLink(
+                text("Stalwart Engine"),
+                Some("https://github.com/n-arms/stalwart"), 
+                StalwartFooter, 
+                state,
+            ),
+            text(` (written by yours truly), and has been online for ${(Js.Date.now() /. 60000. -. 27352806.) -> Js.Math.round -> Float.toString} minutes`)
             ])
-        ]}, [text("find me on GitHub")])
+        ])
     ])
 
 let title = _ =>
@@ -197,9 +137,9 @@ let main = state => div([], [
     ], [
         ("f5 run file", "A plugin for the atom text editor that allows you to run your code just by hitting f5", text("img here")),
         ("Stalwart", "The custom frontend web framework that powers this website. Inspired by elm's html library", text("img here")),
-        ("Neural Combinators", "Experiments with combining neural networks and functional programming", text("img here")),
+        ("Neural Combinators", "Experiments with combining neural networks and functional programming", img([props([("src", "../resources/neural-net.svg")])])),
         ("CBreakable", "A lightweight tool for building terminal user interfaces in golang", text("img here"))
-    ] -> Array.map(((title, content, img)) => (div([
+    ] -> Array.map(((title, description, img)) => (div([
         styles([
             ("padding-left", "2rem"),
             ("flex-basis", "auto"),
@@ -207,7 +147,7 @@ let main = state => div([], [
         ])
     ], [
         h1([], [text(title)]),
-        p([], [text(content)])
+        p([], [text(description)])
     ]), div([
         styles([
             ("padding-left", "2rem"),
@@ -217,25 +157,41 @@ let main = state => div([], [
     ], [img]))) -> alternate
 )])
 
-let blog = _ => div([], 
-    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    -> Js.Array2.map(n => (
-        div([
-            styles([
-                ("padding", "3em")
-            ])
-        ], [
-            text(`blog article ${n -> Int.toString}`)
-        ]),
-        div([
-            styles([
-                ("padding", "3em")
-            ])
-        ], [
-            text("image")
-        ])))
-    -> alternate)
+let blog = state => div([
+    styles([
+        ("padding", "3em"),
+        ("background", "white"),
+        ("color", "black")
+    ])
+], [
+    h1([], [text("Previous Posts")]),
+    div([], state.loadedPosts
+        -> HashMap.String.toArray
+        -> Array.map(((i, page)) => div([], [
+            h2([], [link(text(page.title), None, BlogPost(i), state, false, true)]),
+            p([], [text(`published ${page.date}`)])
+        ]))
+    )
+])
 
+let blogPost = (state, i) => div([
+    styles([
+        ("background", "white"),
+        ("padding", "3em")
+    ])
+], {
+    let firstPost = state.loadedPosts -> HashMap.String.get(i)
+    switch firstPost {
+        | Some(p) => [literal(p.src)]
+        | None => {
+            Js.log(`encountered error when trying to get post ${i} from state:`)
+            Js.log(state)
+            [[]][1] -> Option.getExn
+        }
+    }
+})
+
+let error404 = _ => text("error: 404")
 
 let view = state => div([
     styles([
@@ -248,29 +204,47 @@ let view = state => div([
     switch state.page {
         | BlogButton => blog(state)
         | MainButton => main(state)
+        | BlogPost(i) => blogPost(state, i)
+        | Error404 => error404(state)
     },
     footer(state)
 ])
 
-
-
-let init = {page: MainButton, hover: None}
 let update = (msg, state) => {
     switch msg {
         | HeaderHover(target) => {
-            {page: state.page, hover: Some(target)}
+            {...state, hover: Some(target)}
         }
         | HeaderUnHover(target) => {
-            {page: state.page, hover: None}
+            {...state, hover: None}
         }
         | HeaderClick(target) => {
             location -> Location.setHash(switch target {
                 | BlogButton => "blog"
                 | MainButton => ""
+                | BlogPost(i) => "post_" ++ i
             })
-            {page: target, hover: Some(target)}
+            state.loadedPosts -> HashMap.String.forEach((_, post) => Js.log(post))
+            {
+                ...state,
+                page: target, 
+                hover: Some(target), 
+                loadedPosts: if target == BlogButton && state.loadedPosts -> HashMap.String.size == 0 {
+                    "./pages/manifest.json" 
+                    -> request 
+                    -> parseManifest
+                    -> manifest => manifest.pages
+                    -> Array.map(page => (Js.String.replaceByRe(%re("/[ ]/g"), "-", page.title), {
+                        ...page,
+                        src: request("./pages/" ++ page.src)
+                    }))
+                    -> HashMap.String.fromArray
+                } else {
+                    state.loadedPosts
+                }
+            }
         }
     }
 }
 
-mainloop(root, init, update, view)
+mainloop(root, init(), update, view)
