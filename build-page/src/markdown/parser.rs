@@ -3,10 +3,10 @@ macro_rules! at_least {
         if $text.len() < $count {
             return Err(ParseError::UnexpectedEof);
         }
-    }
+    };
 }
 
-use super::expr::{MarkLiteral, MarkNode, MarkLiteral::*, MarkNode::*};
+use super::expr::{MarkLiteral, MarkLiteral::*, MarkNode, MarkNode::*};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum ParseError {
@@ -15,7 +15,7 @@ pub enum ParseError {
     ExpectedHash,
     ExpectedBacktick,
     ExpectedListEntry,
-    Todo
+    Todo,
 }
 
 pub fn parse_markdown<'a>(text: &'a [char]) -> Result<Vec<MarkNode>, ParseError> {
@@ -40,7 +40,13 @@ fn strip_while<'a>(chars: Vec<char>, text: &'a [char]) -> &'a [char] {
 fn parse_plain<'a>(text: &'a [char]) -> Result<(String, &'a [char]), ParseError> {
     let mut rest = text;
     let mut out = String::new();
-    while rest.len() > 0 && rest[0] != '#' && rest[0] != '`' && rest[0] != '*' && rest[0] != '\n' && rest[0] != '-' {
+    while rest.len() > 0
+        && rest[0] != '#'
+        && rest[0] != '`'
+        && rest[0] != '*'
+        && rest[0] != '\n'
+        && rest[0] != '-'
+    {
         out.push(rest[0]);
         rest = &rest[1..];
     }
@@ -80,7 +86,7 @@ fn parse_bold<'a>(text: &'a [char]) -> Result<(String, &'a [char]), ParseError> 
 }
 
 fn parse_header<'a>(text: &'a [char]) -> Result<(String, u8, &'a [char]), ParseError> {
-    let mut hash_count : u8 = 0;
+    let mut hash_count: u8 = 0;
     while text.len() > hash_count as usize + 1 && text[hash_count as usize] == '#' {
         hash_count += 1;
     }
@@ -92,7 +98,9 @@ fn parse_header<'a>(text: &'a [char]) -> Result<(String, u8, &'a [char]), ParseE
     }
 }
 
-fn parse_code_block<'a>(text: &'a [char]) -> Result<(Option<String>, String, &'a [char]), ParseError> {
+fn parse_code_block<'a>(
+    text: &'a [char],
+) -> Result<(Option<String>, String, &'a [char]), ParseError> {
     at_least!(text, 6);
     if text[0] != '`' || text[1] != '`' || text[2] != '`' {
         return Err(ParseError::ExpectedBacktick);
@@ -121,19 +129,21 @@ fn parse_code_block<'a>(text: &'a [char]) -> Result<(Option<String>, String, &'a
 
 fn parse_lit<'a>(text: &'a [char]) -> Result<(MarkLiteral, &'a [char]), ParseError> {
     parse_header(text)
-        .map(|(header, size, text)| {
-            (Header(header, size), text)
-        }).or_else(|_| {
+        .map(|(header, size, text)| (Header(header, size), text))
+        .or_else(|_| {
             let (contents, text) = parse_bold(text)?;
             Ok((Bold(contents), text))
-        }).or_else(|_: ParseError| {
+        })
+        .or_else(|_: ParseError| {
             let (contents, text) = parse_italics(text)?;
             Ok((Italics(contents), text))
-        }).or_else(|_: ParseError| match parse_code_block(text) {
+        })
+        .or_else(|_: ParseError| match parse_code_block(text) {
             Ok((Some(header), content, text)) if &header == "inline" => Ok((Inline(content), text)),
             Ok((header, content, text)) => Ok((CodeBlock(header, content), text)),
-            Err(e) => Err(e)
-        }).or_else(|_| {
+            Err(e) => Err(e),
+        })
+        .or_else(|_| {
             let (contents, text) = parse_plain(text)?;
             Ok((PlainText(contents), text))
         })
@@ -141,12 +151,12 @@ fn parse_lit<'a>(text: &'a [char]) -> Result<(MarkLiteral, &'a [char]), ParseErr
 
 fn parse_node<'a>(text: &'a [char]) -> Result<(MarkNode, &'a [char]), ParseError> {
     parse_ulist(text)
-        .map(|(ulist, text)| 
-             (UnOrdList(ulist), text)
-        ).or_else(|_| {
+        .map(|(ulist, text)| (UnOrdList(ulist), text))
+        .or_else(|_| {
             let (olist, text) = parse_olist(text)?;
             Ok((OrdList(olist), text))
-        }).or_else(|_: ParseError| {
+        })
+        .or_else(|_: ParseError| {
             let (lit, text) = parse_lit(text)?;
             Ok((Lit(lit), text))
         })
@@ -158,13 +168,13 @@ fn parse_ulist<'a>(text: &'a [char]) -> Result<(Vec<Vec<MarkLiteral>>, &'a [char
     while rest.len() > 1 && rest[0] == '-' {
         let mut current = Vec::new();
         rest = strip_while(vec![' '], &rest[1..]);
-        while rest.len() > 1 && rest[0] != '-' { 
+        while rest.len() > 1 && rest[0] != '-' {
             match parse_lit(rest) {
-                Ok((node, text)) =>{
+                Ok((node, text)) => {
                     rest = strip_while(vec![' '], text);
                     current.push(node);
-                },
-                Err(e) => return Err(e)
+                }
+                Err(e) => return Err(e),
             }
             rest = strip_while(vec![' ', '\n'], &rest[1..]);
         }
@@ -188,89 +198,128 @@ mod test {
     #[test]
     fn plain() {
         assert_eq!(
-            parse_plain(&['1', '2', '3', ' ', '\n', '4']), 
-            Ok((String::from("123 "), vec!['\n', '4'].as_slice())));
+            parse_plain(&['1', '2', '3', ' ', '\n', '4']),
+            Ok((String::from("123 "), vec!['\n', '4'].as_slice()))
+        );
         assert_eq!(
-            parse_plain(&['1', '2', '3', ' ', '*', '4']), 
-            Ok((String::from("123 "), vec!['*', '4'].as_slice())));
+            parse_plain(&['1', '2', '3', ' ', '*', '4']),
+            Ok((String::from("123 "), vec!['*', '4'].as_slice()))
+        );
         assert_eq!(
-            parse_plain(&['1', '2', '3', ' ', '#', '4']), 
-            Ok((String::from("123 "), vec!['#', '4'].as_slice())));
+            parse_plain(&['1', '2', '3', ' ', '#', '4']),
+            Ok((String::from("123 "), vec!['#', '4'].as_slice()))
+        );
         assert_eq!(
-            parse_plain(&['1', '2', '3', ' ', '`', '4']), 
-            Ok((String::from("123 "), vec!['`', '4'].as_slice())));
+            parse_plain(&['1', '2', '3', ' ', '`', '4']),
+            Ok((String::from("123 "), vec!['`', '4'].as_slice()))
+        );
     }
 
     #[test]
     fn bold() {
         assert_eq!(
-            parse_bold(&['*', '*', '1', '*', '*', '2']), 
-            Ok((String::from("1"), vec!['2'].as_slice())));
+            parse_bold(&['*', '*', '1', '*', '*', '2']),
+            Ok((String::from("1"), vec!['2'].as_slice()))
+        );
     }
 
     #[test]
     fn italics() {
         assert_eq!(
-            parse_italics(&['*', '1', '*', '2']), 
-            Ok((String::from("1"), vec!['2'].as_slice())));
+            parse_italics(&['*', '1', '*', '2']),
+            Ok((String::from("1"), vec!['2'].as_slice()))
+        );
     }
 
     #[test]
     fn header() {
         assert_eq!(
-            parse_header(&['#', '1', '\n', '2']), 
-            Ok((String::from("1"), 1, vec!['\n', '2'].as_slice())));
+            parse_header(&['#', '1', '\n', '2']),
+            Ok((String::from("1"), 1, vec!['\n', '2'].as_slice()))
+        );
         assert_eq!(
-            parse_header(&['#', '#', '#', '1', '\n', '2']), 
-            Ok((String::from("1"), 3, vec!['\n', '2'].as_slice())));
+            parse_header(&['#', '#', '#', '1', '\n', '2']),
+            Ok((String::from("1"), 3, vec!['\n', '2'].as_slice()))
+        );
     }
 
     #[test]
     fn code_block() {
         assert_eq!(
             parse_code_block(&['`', '`', '`', '1', '`', '`', '`', '2']),
-            Ok((None, String::from("1"), vec!['2'].as_slice())));
+            Ok((None, String::from("1"), vec!['2'].as_slice()))
+        );
         assert_eq!(
             parse_code_block(&['`', '`', '`', '1', '\n', '2', '`', '`', '`', '3']),
-            Ok((Some(String::from("1")), String::from("\n2"), vec!['3'].as_slice())));
+            Ok((
+                Some(String::from("1")),
+                String::from("\n2"),
+                vec!['3'].as_slice()
+            ))
+        );
     }
 
     #[test]
     fn lit() {
         assert_eq!(
             parse_lit(&['1', '2', '3', '\n']),
-            Ok((PlainText(String::from("123")), vec!['\n'].as_slice())));
+            Ok((PlainText(String::from("123")), vec!['\n'].as_slice()))
+        );
         assert_eq!(
             parse_lit(&['#', '1', '\n']),
-            Ok((Header(String::from("1"), 1), vec!['\n'].as_slice())));
+            Ok((Header(String::from("1"), 1), vec!['\n'].as_slice()))
+        );
         assert_eq!(
             parse_lit(&['*', '1', '*', '\n']),
-            Ok((Italics(String::from("1")), vec!['\n'].as_slice())));
+            Ok((Italics(String::from("1")), vec!['\n'].as_slice()))
+        );
         assert_eq!(
             parse_lit(&['*', '*', '1', '*', '*', '\n']),
-            Ok((Bold(String::from("1")), vec!['\n'].as_slice())));
+            Ok((Bold(String::from("1")), vec!['\n'].as_slice()))
+        );
         assert_eq!(
             parse_lit(&['`', '`', '`', '1', '`', '`', '`', '\n']),
-            Ok((CodeBlock(None, String::from("1")), vec!['\n'].as_slice())));
+            Ok((CodeBlock(None, String::from("1")), vec!['\n'].as_slice()))
+        );
         assert_eq!(
             parse_lit(&['`', '`', '`', '1', '\n', '2', '`', '`', '`', '\n']),
-            Ok((CodeBlock(Some(String::from("1")), String::from("\n2")), vec!['\n'].as_slice())));
+            Ok((
+                CodeBlock(Some(String::from("1")), String::from("\n2")),
+                vec!['\n'].as_slice()
+            ))
+        );
     }
 
     #[test]
     fn node() {
         assert_eq!(
             parse_node(&['#', '1', '\n', '2']),
-            Ok((Lit(Header(String::from("1"), 1)), vec!['\n', '2'].as_slice())));
+            Ok((
+                Lit(Header(String::from("1"), 1)),
+                vec!['\n', '2'].as_slice()
+            ))
+        );
         assert_eq!(
             parse_node(&['-', ' ', '1', '\n', '-', ' ', '2', '\n', '3']),
-            Ok((UnOrdList(vec![vec![PlainText(String::from("1"))], vec![PlainText(String::from("2"))]]), vec!['3'].as_slice())));
+            Ok((
+                UnOrdList(vec![
+                    vec![PlainText(String::from("1"))],
+                    vec![PlainText(String::from("2"))]
+                ]),
+                vec!['3'].as_slice()
+            ))
+        );
     }
 
     #[test]
     fn complete_parse() {
         assert_eq!(
             parse_markdown(&['#', '1', '\n', '#', '2', '\n', '3']),
-            Ok(vec![Lit(Header(String::from("1"), 1)), Lit(Header(String::from("2"), 1)), Lit(PlainText(String::from("3")))]));
+            Ok(vec![
+                Lit(Header(String::from("1"), 1)),
+                Lit(Header(String::from("2"), 1)),
+                Lit(PlainText(String::from("3")))
+            ])
+        );
     }
 }

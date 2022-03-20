@@ -1,6 +1,5 @@
 open Stalwart.Attribute
 open Stalwart.Node
-open Stalwart.Mainloop 
 open State
 open Belt
 
@@ -82,10 +81,14 @@ let content = words => div([
 
 let centered = contents => div([
     styles([
-        ("display", "flex"),
-        ("justify-content", "center"),
-        ("flex-direction", "column")
+        ("text-align", "center"),
+        ("color", "white")
     ])
 ], contents)
 
 let outline = contents => p([], contents)
+
+let styled_div = style => contents => 
+    div([
+        styles(style)
+    ], contents)

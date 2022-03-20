@@ -55,16 +55,11 @@ let init = () => {
     let manifest = "./pages/manifest.json"
         -> request
         -> parseManifest
-    let loadedPosts = switch page {
-        | BlogPost(s) => manifest.pages 
-            -> Array.keep(page => page.title == s)
-            -> Array.get(0)
-            -> Option.map(p => [(Js.String.replaceByRe(%re("/[ ]/g"), "-", p.title), p)])
-            -> Option.map(HashMap.String.fromArray)
-        | _ => Some(HashMap.String.fromArray([]))
-    }
-    switch loadedPosts {
-        | Some(loadedPosts) => {page, hover: None, loadedPosts, manifest}
-        | None => {page: Error404, hover: None, loadedPosts: HashMap.String.fromArray([]), manifest}
-    }
+    let loadedPosts = manifest.pages
+        -> Array.map(page => (page.title -> Js.String2.replaceByRe(%re("/[ ]/g"), "-"), {
+            ...page,
+            src: request("./pages/" ++ page.src)
+        }))
+        -> HashMap.String.fromArray
+    {page, hover: None, loadedPosts, manifest}
 }

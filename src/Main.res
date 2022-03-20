@@ -28,15 +28,13 @@ let getContent = hash =>
     }
 
 let header = state =>
-    div([
-        styles([
-            ("position", "sticky"),
-            ("color", "#bee67e"),
-            ("background-color", "rgba(32, 32, 32, 0.8)"),
-            ("top", "0"),
-            ("margin", "0"),
-            ("display", "flex")
-        ])
+    styled_div([
+        ("position", "sticky"),
+        ("color", "#bee67e"),
+        ("background-color", "rgba(32, 32, 32, 0.8)"),
+        ("top", "0"),
+        ("margin", "0"),
+        ("display", "flex")
     ], [
         link(h1([
             styles([
@@ -60,42 +58,45 @@ let footer = state =>
             ("padding", "2em"),
             ("display", "flex"),
             ("justify-content", "center"),
-            ("flex-direction", "column")
+            ("flex-direction", "column"),
+            ("min-height", "15vh")
         ])
     ], [
         outline([
             centered([
-                content("find me on"),
+                text("find me on"),
                 inlineLink(text(" GitHub "), Some("https://github.com/n-arms"), GitHubFooter, state)
             ])
         ]),
-        outline([
-            centered([
-            content("this website is powered by the "),
+        centered([
+            text("this website is powered by the "),
             inlineLink(
                 text("Stalwart Engine"),
                 Some("https://github.com/n-arms/stalwart"), 
                 StalwartFooter, 
                 state,
             ),
-            text(` (written by yours truly), and has been online for ${(Js.Date.now() /. 60000. -. 27352806.) -> Js.Math.round -> Float.toString} minutes`)
-            ])
+            text({
+                let rem = %raw("(a, b) => a % b")
+                let time_ellapsed = Js.Date.now() /. 1000. -. 1643667192.;
+                let seconds = rem(Js.Math.round(time_ellapsed), 60.) -> Float.toString
+                let minutes = rem(Js.Math.round(time_ellapsed /. 60.), 60.) -> Float.toString
+                let hours = rem(Js.Math.round(time_ellapsed /. 3600.), 24.) -> Float.toString
+                let days = Js.Math.round(time_ellapsed /. 86400.) -> Float.toString
+                ` (written by yours truly), and has been online for ${seconds} seconds, ${minutes} minutes, ${hours} hours, and ${days} days`
+            })
         ])
     ])
 
 let title = _ =>
-    div([
-        styles([
-            ("background-color", "#2f302f"),
-            ("display", "flex"),
-            ("flex-wrap", "wrap"),
-            ("justify-content", "center"),
-        ])
+    styled_div([
+        ("background-color", "#2f302f"),
+        ("display", "flex"),
+        ("flex-wrap", "wrap"),
+        ("justify-content", "center"),
     ], [
-        div([
-            styles([
-                ("padding-left", "2rem"),
-            ])
+        styled_div([
+            ("padding-left", "2rem"),
         ], [
             h1([
                 styles([
@@ -114,16 +115,14 @@ let title = _ =>
                 text("a high school student trying to find their way in the world of tech")
             ])
         ]),
-        div([
-            styles([
-                ("padding-left", "2rem"),
-                ("display", "flex"),
-                ("justify-content", "center"),
-                ("align-content", "center"),
-                ("flex-direction", "column"),
-                ("color", "white"),
-                ("font-size", "1.25em"),
-            ])
+        styled_div([
+            ("padding-left", "2rem"),
+            ("display", "flex"),
+            ("justify-content", "center"),
+            ("align-content", "center"),
+            ("flex-direction", "column"),
+            ("color", "white"),
+            ("font-size", "1.25em"),
         ], [
         ])
     ])
@@ -139,30 +138,24 @@ let main = state => div([], [
         ("Stalwart", "The custom frontend web framework that powers this website. Inspired by elm's html library", text("img here")),
         ("Neural Combinators", "Experiments with combining neural networks and functional programming", img([props([("src", "../resources/neural-net.svg")])])),
         ("CBreakable", "A lightweight tool for building terminal user interfaces in golang", text("img here"))
-    ] -> Array.map(((title, description, img)) => (div([
-        styles([
-            ("padding-left", "2rem"),
-            ("flex-basis", "auto"),
-            ("width", "40%")
-        ])
+    ] -> Array.map(((title, description, img)) => (styled_div([
+        ("padding-left", "2rem"),
+        ("flex-basis", "auto"),
+        ("width", "40%")
     ], [
         h1([], [text(title)]),
         p([], [text(description)])
-    ]), div([
-        styles([
-            ("padding-left", "2rem"),
-            ("flex-basis", "auto"),
-            ("width", "40%")
-        ])
+    ]), styled_div([
+        ("padding-left", "2rem"),
+        ("flex-basis", "auto"),
+        ("width", "40%")
     ], [img]))) -> alternate
 )])
 
-let blog = state => div([
-    styles([
-        ("padding", "3em"),
-        ("background", "white"),
-        ("color", "black")
-    ])
+let blog = state => styled_div([
+    ("padding", "3em"),
+    ("background", "white"),
+    ("color", "black")
 ], [
     h1([], [text("Previous Posts")]),
     div([], state.loadedPosts
@@ -191,23 +184,30 @@ let blogPost = (state, i) => div([
     }
 })
 
-let error404 = _ => text("error: 404")
+let error404 = _ => content("error: 404")
 
-let view = state => div([
-    styles([
-        ("id", "content"),
-        ("background-color", "#2f302f"),
-        ("margin", "0")
-    ])
+let view = state => styled_div([
+    ("id", "content"),
+    ("background-color", "#2f302f"),
+    ("margin", "0"),
 ], [
     header(state),
-    switch state.page {
-        | BlogButton => blog(state)
-        | MainButton => main(state)
-        | BlogPost(i) => blogPost(state, i)
-        | Error404 => error404(state)
-    },
-    footer(state)
+    styled_div([
+        ("min-height", "70vh"),
+        ("background-color", "white"),
+    ], [
+        switch state.page {
+            | BlogButton => blog(state)
+            | MainButton => main(state)
+            | BlogPost(i) => blogPost(state, i)
+            | _ => error404(state)
+        }
+    ]),
+    styled_div([
+        ("min-height", "30vh")
+    ], [
+        footer(state)
+    ])
 ])
 
 let update = (msg, state) => {
@@ -215,7 +215,7 @@ let update = (msg, state) => {
         | HeaderHover(target) => {
             {...state, hover: Some(target)}
         }
-        | HeaderUnHover(target) => {
+        | HeaderUnHover(_) => {
             {...state, hover: None}
         }
         | HeaderClick(target) => {
@@ -223,25 +223,12 @@ let update = (msg, state) => {
                 | BlogButton => "blog"
                 | MainButton => ""
                 | BlogPost(i) => "post_" ++ i
+                | _ => location -> Location.hash
             })
-            state.loadedPosts -> HashMap.String.forEach((_, post) => Js.log(post))
             {
                 ...state,
                 page: target, 
                 hover: Some(target), 
-                loadedPosts: if target == BlogButton && state.loadedPosts -> HashMap.String.size == 0 {
-                    "./pages/manifest.json" 
-                    -> request 
-                    -> parseManifest
-                    -> manifest => manifest.pages
-                    -> Array.map(page => (Js.String.replaceByRe(%re("/[ ]/g"), "-", page.title), {
-                        ...page,
-                        src: request("./pages/" ++ page.src)
-                    }))
-                    -> HashMap.String.fromArray
-                } else {
-                    state.loadedPosts
-                }
             }
         }
     }
