@@ -1,2 +1,1 @@
-# n-arms.github.io
-My github pages site
+# How to deploy a SvelteKit website to GitHub pages
