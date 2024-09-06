@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>How to deploy a SvelteKit website to GitHub pages</title>
+	<title>Nick Armstrong</title>
 </svelte:head>
 
 <div id="header">
