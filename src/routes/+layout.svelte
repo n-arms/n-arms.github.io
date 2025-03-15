@@ -10,7 +10,8 @@
 	main {
 		max-width: 40rem;
 		margin: auto;
-		padding: 0 1rem;
+		width: 100%;
+		height: 100%;
 	}
 
 	main > *:not(:last-child) {

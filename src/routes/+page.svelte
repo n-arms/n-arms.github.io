@@ -1,6 +1,5 @@
 <svelte:head>
 	<title>Nick Armstrong</title>
-	<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
 </svelte:head>
 
 <div id="header">
@@ -20,10 +19,13 @@
 	Waterloo Computer Engineering '29
 </p>
 <p>
-	I'm a comp eng undergrad who is passionate about compilers, robotics pathfinding and trajectory optimization, GPU programming, and embedded development.
+	I'm a comp eng undergrad who is passionate about embedded software, microcontrollers, robotics, pcb design, compilers, robotic pathfinding and trajectory optimization.
 </p>
 <p>
-	I'm currently seeking employment for two different 4 month co-op jobs, one starting January 2025, and the next starting September 2025.
+	I'm currently working at Ford as a Manufacturing Software Engineer and seeking employment for an embedded software/hardware co-op starting in September 2025.
+</p>
+<p>
+	My resume is <a target='_blank' href="Resume.pdf">here</a> and you can reach me at <a href="mailto:n2armstr@uwaterloo.ca">n2armstr@uwaterloo.ca</a>.
 </p>
 
 <style>
@@ -41,8 +43,5 @@
 		flex-direction: row;
 		align-items: baseline;
 		justify-content: space-between;
-	}
-	h1, p {
-		font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
 	}
 </style>
