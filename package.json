@@ -1,5 +1,5 @@
 {
-  "name": "capricious-crater",
+  "name": "n-arms.github.io",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -9,6 +9,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.5.2"
+    "@astrojs/alpinejs": "^0.4.1",
+    "@fontsource/inter": "^5.3.0",
+    "alpinejs": "^3.14.9",
+    "astro": "^5.13.5"
   }
 }

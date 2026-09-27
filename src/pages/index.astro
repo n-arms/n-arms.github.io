@@ -1,39 +1,367 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import '@fontsource/inter/latin-400.css';
+import '@fontsource/inter/latin-500.css';
+import '@fontsource/inter/latin-600.css';
 ---
 
-<head>
- <title>Nick Armstrong</title>
-</head>
-
-<Layout>
-	<Welcome />
-</Layout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Nick Armstrong — computer engineering student at Waterloo. Embedded/firmware, tinyML, robotics, and high performance compute." />
+    <meta property="og:title" content="Nick Armstrong" />
+    <meta property="og:description" content="Computer engineering student at Waterloo. Embedded/firmware, tinyML, robotics, and high performance compute." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://n-arms.github.io/" />
+    <meta property="og:image" content="https://n-arms.github.io/drone-leds.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" as="image" href="/drone-leds.jpg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Nick Armstrong</title>
+  </head>
+  <body>
+    <main>
+      <div id="header">
+        <h1>Nick Armstrong</h1>
+        <div id="links">
+          <a href="https://www.linkedin.com/in/nick-armstrong-eng/" aria-label="Nick Armstrong on LinkedIn">
+            <img class="logo" src="/LinkedInLogo.png" alt="LinkedIn logo" width="96" height="96" />
+          </a>
+          <a href="https://www.github.com/n-arms" aria-label="Nick Armstrong on GitHub">
+            <img class="logo" src="/GitHubLogo.png" alt="GitHub logo" width="96" height="96" />
+          </a>
+        </div>
+      </div>
+      <ul class="intro">
+        <li>Studying computer engineering at the University of Waterloo</li>
+        <li>Interested in embedded/firmware, tinyML, robotics, and high performance compute</li>
+        <li>Always building something and down to chat!</li>
+      </ul>
+      <h2>Things I've Built</h2>
+      <div class="item project">
+        <h3>Distributed CAN Network</h3>
+        <p class="meta">STM32, Embedded C++, CAN, DMA</p>
+        <div class="project-layout">
+          <div class="project-media">
+            <figure>
+              <img src="/drone-leds.jpg" alt="Drone with addressable LED boards on the CAN bus" class="project-img" width="800" height="371" decoding="async" fetchpriority="high" />
+            </figure>
+            <figure class="crop-frame">
+              <img src="/drone-oscope.jpg" alt="Debugging LED firmware with oscilloscope and logic analyzer" class="project-img" width="800" height="400" loading="lazy" decoding="async" />
+            </figure>
+          </div>
+          <div class="project-text">
+            <ul>
+              <li>Led firmware development for distriuted STM32 system of plug-and-play nodes, using a shared CAN bus to synchronize behaviour with the drone state.</li>
+              <li>Used the STM32 HAL to control DMA, interrupts, and hardware timers to communicate with board peripherals while minimizing overhead usage.</li>
+              <li>Wrote modular, reusable, and highly maintainable embedded C++, making architectural decisions to decouple separate components.</li>
+              <li><a href="https://docs.google.com/document/d/1ssI5t_hziQLQZb-bHjh027jfV-4HPEixC-y71o3FtRA/edit?usp=sharing">CAN LED network whitepaper</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="item project">
+        <h3>Low Power Semantic Visual SLAM</h3>
+        <p class="meta">Rust, Assembly, SIMD, ESP32</p>
+        <div class="project-layout">
+          <div class="project-media">
+            <figure>
+              <img src="/vslam.jpg" alt="Low power semantic visual SLAM running on ESP32" class="project-img" width="512" height="384" loading="lazy" decoding="async" />
+            </figure>
+          </div>
+          <div class="project-text">
+            <ul>
+              <li>Handwritten image processing kernels in assembly, using SIMD and minimizing data dependencies to eliminate pipeline hazards and 4x throughput.</li>
+              <li>Fine-tuned and quantized image embeddings model in TensorFlow, optimizing for high-throughput ESP-NN inference.</li>
+              <li>Developed a PnP RANSAC pipeline for robust camera localization, rejecting dynamic outliers.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="item project">
+        <h3>Robotic Path Planning Library</h3>
+        <p class="meta">Trajectory Planning, Kalman Filtering, PID</p>
+        <div class="project-layout">
+          <div class="project-media">
+            <figure>
+              <img src="/PathSpline2.png" alt="Hermite spline trajectory generated by the path planning library" class="project-img" width="320" height="195" loading="lazy" decoding="async" />
+            </figure>
+          </div>
+          <div class="project-text">
+            <ul>
+              <li>Use RProp numerical optimization to generate optimal Hermite spline trajectories.</li>
+              <li>Developed Kalman-filter based odometry and IMU-based sensor fusion to adaptively react to disturbances.</li>
+              <li>Deployed to a Linux device at FRC robotics competitions, enabling complex autonomous routes to score more points.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="item project">
+        <h3>Closed Loop Stepper Motor ASIC</h3>
+        <p class="meta">Verilog, TinyTapeout</p>
+        <div class="project-layout">
+          <div class="project-media">
+            <figure>
+              <img src="/StepperDriverDiagram.png" alt="Block diagram of closed loop stepper motor driver ASIC" class="project-img" width="622" height="357" loading="lazy" decoding="async" />
+            </figure>
+          </div>
+          <div class="project-text">
+            <ul>
+              <li>Built a FSM-based SPI peripheral, using best practices such as cascading flip-flops to avoid metastability issues.</li>
+              <li>Implemented an in-hardware PI controller using accumulators and power-of-2 coefficients to eliminate unnecessary MAC units.</li>
+              <li>Implemented motion planning math using a FSM, saving 4-5x area over the naive MACs and divide units.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="item project">
+        <h3>Functional Programming Language Compiler</h3>
+        <p class="meta">Rust, Git, GitHub</p>
+        <div class="project-layout">
+          <div class="project-media">
+            <figure>
+              <img src="/KhakiLang.png" alt="KhakiLang compiler source code showing expression AST definition" class="project-img" width="602" height="311" loading="lazy" decoding="async" />
+            </figure>
+          </div>
+          <div class="project-text">
+            <ul>
+              <li>Developed a compiler for a functional programming language using techniques including specialization, unboxing, and defunctionalization to maximize performance.</li>
+              <li>Used the Rust type system to guarantee correctness of program transformations.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <h2>Places I've Worked</h2>
+      <div class="item">
+        <h3>Embedded Software Development Intern — Onsemi</h3>
+        <p class="meta">Sept. 2025 – Dec. 2025</p>
+        <ul>
+          <li>Built a thread-safe SPI HAL using fine-grained locking and a deterministic job queue to arbitrate concurrent hardware access.</li>
+          <li>Accelerated FPGA bring-up, analyzing Verilog &amp; register maps to write bare-metal driver code, bypassing hardware defects.</li>
+          <li>Architected a custom co-operatively scheduled RTOS, providing production-ready multitasking to an ultra low power MCU using less than 3 KB of ROM.</li>
+          <li>Led discussions and delivered presentations to drive the design of a hardware-agnostic non-volatile memory stack, establishing a unified API for EEPROM, OTPM, and ReRAM.</li>
+          <li>Implemented a high-performance CRC library, optimized with lookup tables and assembly-level tuning, performing as few as 1.25 memory loads per byte.</li>
+          <li>Researched the JEDEC SFDP spec to implement a flash controller with dynamic runtime detection of device capabilities.</li>
+        </ul>
+      </div>
+      <div class="item">
+        <h3>Drone Software Project Manager — WARG</h3>
+        <p class="meta">90+ member student design team · Sept. 2024 – Present</p>
+        <ul>
+          <li>Managed a 9-member team developing software to power a distributed network of microcontrollers on a unified CAN bus, using a decentralized leader election algorithm for a plug-and-play Flight Lighting System.</li>
+          <li>Architected software to use embedded hardware acceleration including DMA, interrupts, and hardware timers to optimize performance.</li>
+          <li>Debugged distributed software using GDB and network capture tools like logic analyzers and oscilloscopes.</li>
+          <li>Led software development as project manager using project boards and PR-based workflows.</li>
+        </ul>
+      </div>
+      <div class="item">
+        <h3>Software Engineering Intern — Endex</h3>
+        <p class="meta">May 2026 – Aug. 2026</p>
+        <ul>
+          <li>Built financial agentic AI, backed by OpenAI.</li>
+        </ul>
+      </div>
+      <div class="item">
+        <h3>Embedded Software Development Intern — Ford Motors Research &amp; Development Centre</h3>
+        <p class="meta">Jan. 2025 – Apr. 2025</p>
+        <ul>
+          <li>Built a fault-tolerant parser for a binary logging file format, bypassing corrupted payloads to ensure reliable testing while tracking down bugs in other teams' logging tools using Wireshark.</li>
+          <li>Redesigned a concurrent logging library using state machines to ensure thread safety and clarity.</li>
+          <li>Analyzed a massive codebase to create specialized SELinux policy files and improve security.</li>
+          <li>Developed an embedded C++ hardware abstraction layer to enable testing via gTest and gMock.</li>
+        </ul>
+      </div>
+    </main>
+  </body>
+</html>
 
 <style>
-	main {
-		max-width: 40rem;
-		margin: auto;
-		width: 100%;
-		height: 100%;
-	}
-	.logo {
-		max-height: 2rem;
-		margin-left: 1rem;
-		margin-right: 1rem;
-	}
-	#links {
-		display: flex;
-		flex-direction: row;
-	}
-	#header {
-		display: flex;
-		flex-direction: row;
-		align-items: baseline;
-		justify-content: space-between;
-	}
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: #fff;
+    color: #000;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+
+  body {
+    display: block;
+    text-align: left;
+    padding: 2rem 1rem;
+    box-sizing: border-box;
+  }
+
+  main {
+    max-width: 54rem;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem;
+  }
+
+  #header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  #links {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .logo {
+    height: 1.75rem;
+    width: auto;
+    display: block;
+  }
+
+  #links {
+    gap: 0.75rem;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 2.5rem 0 0;
+  }
+
+  .intro {
+    display: block;
+    text-align: left;
+    margin: 0.5rem 0;
+    padding-left: 1.25rem;
+    line-height: 1.6;
+  }
+
+  .item {
+    text-align: left;
+    margin: 1.5rem 0;
+  }
+
+  .item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .meta {
+    font-size: 0.875rem;
+    opacity: 0.6;
+    margin: 0.25rem 0 0.5rem;
+  }
+
+  .item ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+
+  .item li {
+    margin: 0.25rem 0;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  figure {
+    margin: 0;
+  }
+
+  .project-img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .crop-frame {
+    width: 100%;
+    aspect-ratio: 3 / 1;
+    overflow: hidden;
+  }
+
+  .crop-frame .project-img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  figcaption {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    text-align: center;
+    margin-top: 0.25rem;
+  }
+
+  .project-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 0.75rem 0;
+  }
+
+  .project-media {
+    flex: 0 0 42%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .project-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  @media (min-width: 700px) {
+    .project-layout {
+      flex-direction: row;
+      align-items: start;
+    }
+  }
+
+  p {
+    margin: 0.5rem 0;
+    line-height: 1.6;
+  }
+
+  .counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    font-size: 1.25rem;
+  }
+
+  .counter button {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.25rem;
+    cursor: pointer;
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
+  }
+
+  .counter span {
+    min-width: 2ch;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hint {
+    font-size: 0.875rem;
+    opacity: 0.6;
+  }
 </style>
