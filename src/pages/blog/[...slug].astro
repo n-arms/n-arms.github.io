@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id.replace(/\.mdx?$/, '') },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const formatDate = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+---
+
+<BaseLayout title={`${post.data.title} — Nick Armstrong`} description={post.data.description ?? post.data.title}>
+  <article class="prose">
+    <h1>{post.data.title}</h1>
+    <p class="meta">
+      <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+      {post.data.updatedDate ? ` · Updated ${formatDate(post.data.updatedDate)}` : ''}
+      {post.data.tags?.length ? ` · ${post.data.tags.join(', ')}` : ''}
+    </p>
+    <Content />
+  </article>
+
+  <p class="back">
+    <a href="/blog">← All posts</a>
+    {' · '}
+    <a href="/">Home</a>
+  </p>
+</BaseLayout>
+
+<style>
+  .meta {
+    font-size: 0.875rem;
+    opacity: 0.6;
+    margin-top: 0;
+  }
+
+  .back {
+    margin-top: 2.5rem;
+  }
+</style>

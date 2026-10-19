@@ -3,6 +3,12 @@ import '@fontsource/inter/latin-400.css';
 import '@fontsource/inter/latin-600.css';
 import inter400 from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
 import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const recentPosts = allPosts
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
 ---
 
 <!doctype html>
@@ -40,12 +46,22 @@ import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
       <ul class="intro">
         <li>Studying computer engineering at the University of Waterloo</li>
         <li>Interested in embedded/firmware, tinyML, robotics, and high performance compute</li>
+        <li>Interned at Onsemi and Ford Motors building performant embedded systems, and at Endex.ai building autonomous finance agents</li>
         <li>Always building something and down to chat!</li>
       </ul>
-      <h2>Things I've Built</h2>
+      <h2>Recent Posts</h2>
+      <div class="item">
+        <ul class="blog-preview">
+          {recentPosts.map((post) => (
+            <li>
+              <a href={`/blog/${post.id.replace(/\.mdx?$/, '')}/`}>{post.data.title}</a>
+            </li>
+          ))}
+        </ul>
+        <p class="more"><a href="/blog">All posts ({allPosts.length}) →</a></p>
+      </div>
+      <h2>Selected Projects</h2>
       <div class="item project">
-        <h3>Distributed CAN Network</h3>
-        <p class="meta">STM32, Embedded C++, CAN, DMA</p>
         <div class="project-layout">
           <div class="project-media">
             <figure>
@@ -56,8 +72,10 @@ import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
             </figure>
           </div>
           <div class="project-text">
+            <h3>Distributed CAN Network</h3>
+            <p class="meta">STM32, Embedded C++, CAN, DMA</p>
             <ul>
-              <li>Led firmware development for distriuted STM32 system of plug-and-play nodes, using a shared CAN bus to synchronize behaviour with the drone state.</li>
+              <li>Led firmware development for distributed STM32 system of plug-and-play nodes, using a shared CAN bus to synchronize behaviour with the drone state.</li>
               <li>Used the STM32 HAL to control DMA, interrupts, and hardware timers to communicate with board peripherals while minimizing overhead usage.</li>
               <li>Wrote modular, reusable, and highly maintainable embedded C++, making architectural decisions to decouple separate components.</li>
               <li><a href="https://docs.google.com/document/d/1ssI5t_hziQLQZb-bHjh027jfV-4HPEixC-y71o3FtRA/edit?usp=sharing">CAN LED network whitepaper</a></li>
@@ -66,8 +84,6 @@ import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
         </div>
       </div>
       <div class="item project">
-        <h3>Low Power Semantic Visual SLAM</h3>
-        <p class="meta">Rust, Assembly, SIMD, ESP32</p>
         <div class="project-layout">
           <div class="project-media">
             <figure>
@@ -75,6 +91,8 @@ import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
             </figure>
           </div>
           <div class="project-text">
+            <h3>Low Power Semantic Visual SLAM</h3>
+            <p class="meta">Rust, Assembly, SIMD, ESP32</p>
             <ul>
               <li>Handwritten image processing kernels in assembly, using SIMD and minimizing data dependencies to eliminate pipeline hazards and 4x throughput.</li>
               <li>Fine-tuned and quantized image embeddings model in TensorFlow, optimizing for high-throughput ESP-NN inference.</li>
@@ -84,8 +102,6 @@ import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
         </div>
       </div>
       <div class="item project">
-        <h3>Robotic Path Planning Library</h3>
-        <p class="meta">Trajectory Planning, Kalman Filtering, PID</p>
         <div class="project-layout">
           <div class="project-media">
             <figure>
@@ -93,6 +109,8 @@ import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
             </figure>
           </div>
           <div class="project-text">
+            <h3>Robotic Path Planning Library</h3>
+            <p class="meta">Trajectory Planning, Kalman Filtering, PID</p>
             <ul>
               <li>Use RProp numerical optimization to generate optimal Hermite spline trajectories.</li>
               <li>Developed Kalman-filter based odometry and IMU-based sensor fusion to adaptively react to disturbances.</li>
@@ -102,8 +120,6 @@ import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
         </div>
       </div>
       <div class="item project">
-        <h3>Closed Loop Stepper Motor ASIC</h3>
-        <p class="meta">Verilog, TinyTapeout</p>
         <div class="project-layout">
           <div class="project-media">
             <figure>
@@ -111,6 +127,8 @@ import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
             </figure>
           </div>
           <div class="project-text">
+            <h3>Closed Loop Stepper Motor ASIC</h3>
+            <p class="meta">Verilog, TinyTapeout</p>
             <ul>
               <li>Built a FSM-based SPI peripheral, using best practices such as cascading flip-flops to avoid metastability issues.</li>
               <li>Implemented an in-hardware PI controller using accumulators and power-of-2 coefficients to eliminate unnecessary MAC units.</li>
@@ -120,8 +138,6 @@ import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
         </div>
       </div>
       <div class="item project">
-        <h3>Functional Programming Language Compiler</h3>
-        <p class="meta">Rust, Git, GitHub</p>
         <div class="project-layout">
           <div class="project-media">
             <figure>
@@ -129,52 +145,14 @@ import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
             </figure>
           </div>
           <div class="project-text">
+            <h3>Functional Programming Language Compiler</h3>
+            <p class="meta">Rust, Git, GitHub</p>
             <ul>
               <li>Developed a compiler for a functional programming language using techniques including specialization, unboxing, and defunctionalization to maximize performance.</li>
               <li>Used the Rust type system to guarantee correctness of program transformations.</li>
             </ul>
           </div>
         </div>
-      </div>
-      <h2>Places I've Worked</h2>
-      <div class="item">
-        <h3>Embedded Software Development Intern — Onsemi</h3>
-        <p class="meta">Sept. 2025 – Dec. 2025</p>
-        <ul>
-          <li>Built a thread-safe SPI HAL using fine-grained locking and a deterministic job queue to arbitrate concurrent hardware access.</li>
-          <li>Accelerated FPGA bring-up, analyzing Verilog &amp; register maps to write bare-metal driver code, bypassing hardware defects.</li>
-          <li>Architected a custom co-operatively scheduled RTOS, providing production-ready multitasking to an ultra low power MCU using less than 3 KB of ROM.</li>
-          <li>Led discussions and delivered presentations to drive the design of a hardware-agnostic non-volatile memory stack, establishing a unified API for EEPROM, OTPM, and ReRAM.</li>
-          <li>Implemented a high-performance CRC library, optimized with lookup tables and assembly-level tuning, performing as few as 1.25 memory loads per byte.</li>
-          <li>Researched the JEDEC SFDP spec to implement a flash controller with dynamic runtime detection of device capabilities.</li>
-        </ul>
-      </div>
-      <div class="item">
-        <h3>Drone Software Project Manager — WARG</h3>
-        <p class="meta">90+ member student design team · Sept. 2024 – Present</p>
-        <ul>
-          <li>Managed a 9-member team developing software to power a distributed network of microcontrollers on a unified CAN bus, using a decentralized leader election algorithm for a plug-and-play Flight Lighting System.</li>
-          <li>Architected software to use embedded hardware acceleration including DMA, interrupts, and hardware timers to optimize performance.</li>
-          <li>Debugged distributed software using GDB and network capture tools like logic analyzers and oscilloscopes.</li>
-          <li>Led software development as project manager using project boards and PR-based workflows.</li>
-        </ul>
-      </div>
-      <div class="item">
-        <h3>Software Engineering Intern — Endex</h3>
-        <p class="meta">May 2026 – Aug. 2026</p>
-        <ul>
-          <li>Built financial agentic AI, backed by OpenAI.</li>
-        </ul>
-      </div>
-      <div class="item">
-        <h3>Embedded Software Development Intern — Ford Motors Research &amp; Development Centre</h3>
-        <p class="meta">Jan. 2025 – Apr. 2025</p>
-        <ul>
-          <li>Built a fault-tolerant parser for a binary logging file format, bypassing corrupted payloads to ensure reliable testing while tracking down bugs in other teams' logging tools using Wireshark.</li>
-          <li>Redesigned a concurrent logging library using state machines to ensure thread safety and clarity.</li>
-          <li>Analyzed a massive codebase to create specialized SELinux policy files and improve security.</li>
-          <li>Developed an embedded C++ hardware abstraction layer to enable testing via gTest and gMock.</li>
-        </ul>
       </div>
     </main>
   </body>
@@ -233,10 +211,25 @@ import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
     gap: 0.75rem;
   }
 
+  /* Writing list shares the same flush-left edge as section titles */
+  .item ul.blog-preview {
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
+  }
+
+  .blog-preview li {
+    margin: 0.4rem 0;
+  }
+
+  .more {
+    margin: 0.5rem 0 0;
+  }
+
   h2 {
     font-size: 1.75rem;
     font-weight: 600;
-    margin: 2.5rem 0 0;
+    margin: 2.5rem 0 1rem;
   }
 
   .intro {
@@ -249,7 +242,12 @@ import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
 
   .item {
     text-align: left;
-    margin: 1.5rem 0;
+    margin: 0 0 2rem;
+  }
+
+  .item.project + .item.project {
+    border-top: 1px solid #eee;
+    padding-top: 1.5rem;
   }
 
   .item h3 {
@@ -312,7 +310,7 @@ import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    margin: 0.75rem 0;
+    margin: 0;
   }
 
   .project-media {
@@ -328,10 +326,15 @@ import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
     min-width: 0;
   }
 
+  .project-text ul {
+    margin: 0.5rem 0 0;
+  }
+
   @media (min-width: 700px) {
     .project-layout {
       flex-direction: row;
       align-items: start;
+      gap: 1.5rem;
     }
   }
 

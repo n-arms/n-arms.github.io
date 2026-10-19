@@ -1,0 +1,60 @@
+{
+  "name": "armasm",
+  "displayName": "ARM Assembly",
+  "scopeName": "source.armasm",
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#string" },
+    { "include": "#label" },
+    { "include": "#directive" },
+    { "include": "#instruction" },
+    { "include": "#register" },
+    { "include": "#number" },
+    { "include": "#punctuation" }
+  ],
+  "repository": {
+    "comment": {
+      "patterns": [
+        { "name": "comment.line.double-slash.armasm", "match": "//.*$" },
+        { "name": "comment.line.semicolon.armasm", "match": ";.*$" },
+        { "name": "comment.block.armasm", "begin": "/\\*", "end": "\\*/" }
+      ]
+    },
+    "string": {
+      "patterns": [
+        { "name": "string.quoted.double.armasm", "match": "\"(?:\\\\.|[^\"\\\\])*\"" },
+        { "name": "string.quoted.single.armasm", "match": "'(?:\\\\.|[^'\\\\])*'" }
+      ]
+    },
+    "label": {
+      "match": "^\\s*([A-Za-z_.][A-Za-z0-9_$.]*)\\s*(:)",
+      "captures": {
+        "1": { "name": "entity.name.function.armasm" },
+        "2": { "name": "punctuation.definition.label.armasm" }
+      }
+    },
+    "directive": {
+      "name": "keyword.control.directive.armasm",
+      "match": "(?i)\\.[a-z][a-z0-9_]*"
+    },
+    "instruction": {
+      "name": "keyword.mnemonic.armasm",
+      "match": "(?i)\\b(mov|movs|mvn|mvns|add|adds|adc|adcs|sub|subs|sbc|sbcs|rsb|rsbs|mul|muls|and|ands|orr|orrs|eor|eors|bic|bics|orn|tst|teq|cmp|cmn|lsl|lsls|lsr|lsrs|asr|asrs|ror|rors|rrx|ldr|ldrb|ldrh|ldrsb|ldrsh|ldm|ldmia|ldmfd|ldmdb|ldmea|str|strb|strh|stm|stmia|stmfd|stmdb|stmea|push|pop|beq|bne|bcs|bhs|bcc|blo|bmi|bpl|bvs|bvc|bhi|bls|bge|blt|bgt|ble|bal|bl|blx|bx|b|cbz|cbnz|adr|nop|wfi|wfe|sev|svc|bkpt|mrs|msr|dmb|dsb|isb|cps|uxtb|uxth|sxtb|sxth|rev16|revsh|rev|rbit|movw|movt|it)(\\.[nw])?\\b",
+      "captures": {
+        "2": { "name": "storage.modifier.size.armasm" }
+      }
+    },
+    "register": {
+      "name": "variable.register.armasm",
+      "match": "(?i)\\b(r1[0-5]|r[0-9]|sp|lr|pc|apsr|ipsr|epsr|xpsr|cpsr|spsr|primask|control)\\b"
+    },
+    "number": {
+      "name": "constant.numeric.integer.armasm",
+      "match": "#?0[xX][0-9a-fA-F]+|#\\d+|\\b\\d+\\b"
+    },
+    "punctuation": {
+      "name": "punctuation.separator.armasm",
+      "match": "[\\[\\]{},!]"
+    }
+  }
+}
