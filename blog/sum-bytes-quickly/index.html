@@ -115,7 +115,7 @@ html,body{margin:0;min-height:100%;background:#fff;color:#000;font-family:Inter,
 <p>It turns out that if you use some specialized instructions you can do better:</p>
 <ul>
 <li><code>uxtb</code> (<strong>U</strong>nsigned e<strong>XT</strong>end <strong>B</strong>yte): grabs the 8 LSB from a source register and zero extends them to the destination: effectively <code>rDest = rSrc &#x26; 0xFF</code></li>
-<li><code>rev16</code> (<strong>REV</strong>erse bytes in halfwords): reverses the byte order in each halfword: if <code>rSrc</code> holds $[b_0, b_1, b_2, b_3]$, then <code>rDest</code> will hold $[b_1, b_0, b_3, b_2]$.</li>
+<li><code>rev16</code> (<strong>REV</strong>erse bytes in halfwords): reverses the byte order in each halfword: if <code>rSrc</code> holds <em>[b<sub>0</sub>, b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>]</em>, then <code>rDest</code> will hold <em>[b<sub>1</sub>, b<sub>0</sub>, b<sub>3</sub>, b<sub>2</sub>]</em>.</li>
 <li><code>ldmia</code> (<strong>L</strong>oa<strong>D</strong> <strong>M</strong>ultiple <strong>I</strong>ncrement <strong>A</strong>fter): load a word (or actually multiple) from <code>rPtr</code>, and then increment <code>rPtr += 4</code>.</li>
 </ul>
 <p><code>rev16</code> is the most important: extracting the middle two bytes takes two instructions (a shift and a <code>uxtb</code> or <code>ands</code>), whereas extracting the most significant or least significant byte takes only one (a shift or a <code>uxtb</code>). Since <code>rev16</code> swaps the two middle bytes with the two outer bytes in 1 cycle, we can write:</p>
