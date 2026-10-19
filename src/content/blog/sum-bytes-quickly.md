@@ -139,7 +139,7 @@ Counting only the main instructions of the loop you get 13 cycles / 4 bytes (wor
 
 It turns out that if you use some specialized instructions you can do better:
 - `uxtb` (**U**nsigned e**XT**end **B**yte): grabs the 8 LSB from a source register and zero extends them to the destination: effectively `rDest = rSrc & 0xFF`
-- `rev16` (**REV**erse bytes in halfwords): reverses the byte order in each halfword: if `rSrc` holds $[b_0, b_1, b_2, b_3]$, then `rDest` will hold $[b_1, b_0, b_3, b_2]$.
+- `rev16` (**REV**erse bytes in halfwords): reverses the byte order in each halfword: if `rSrc` holds <em>[b<sub>0</sub>, b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub>]</em>, then `rDest` will hold <em>[b<sub>1</sub>, b<sub>0</sub>, b<sub>3</sub>, b<sub>2</sub>]</em>.
 - `ldmia` (**L**oa**D** **M**ultiple **I**ncrement **A**fter): load a word (or actually multiple) from `rPtr`, and then increment `rPtr += 4`.
 
 `rev16` is the most important: extracting the middle two bytes takes two instructions (a shift and a `uxtb` or `ands`), whereas extracting the most significant or least significant byte takes only one (a shift or a `uxtb`). Since `rev16` swaps the two middle bytes with the two outer bytes in 1 cycle, we can write:
