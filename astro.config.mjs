@@ -1,11 +1,8 @@
 // @ts-check
 import { readFileSync } from 'node:fs';
 import { defineConfig } from 'astro/config';
-// NOTE: Alpine.js kept as a dependency for later interactivity.
-// Re-enable by re-adding the @astrojs/alpinejs integration below.
-// import alpinejs from '@astrojs/alpinejs';
-
 import alpinejs from '@astrojs/alpinejs';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 // n-arms.github.io is a user/org pages site, served from the repo root,
@@ -18,7 +15,7 @@ const armasmGrammar = JSON.parse(
 
 export default defineConfig({
   site: 'https://n-arms.github.io',
-  integrations: [alpinejs()],
+  integrations: [alpinejs(), sitemap()],
   markdown: {
     shikiConfig: {
       // Custom grammars are additive: bundled languages (e.g. `c`) still

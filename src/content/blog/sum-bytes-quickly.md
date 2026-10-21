@@ -1,5 +1,6 @@
 ---
 title: Add This List of Numbers, But Fast
+seoKeywords: Cortex-M0+ Assembly Summing
 description: Increasingly optimized and illegible array summing techniques for the Cortex-M0+ core.
 pubDate: 2026-10-19
 tags: ["embedded", "simd", "performance"]

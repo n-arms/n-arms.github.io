@@ -7,6 +7,9 @@
         "title": {
           "type": "string"
         },
+        "seoKeywords": {
+          "type": "string"
+        },
         "description": {
           "type": "string"
         },

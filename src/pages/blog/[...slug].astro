@@ -13,11 +13,21 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 
+// Tabs and Google results get keyword context; the H1 and social card keep
+// the creative title.
+const tabTitle = post.data.seoKeywords
+  ? `${post.data.title} (${post.data.seoKeywords})`
+  : post.data.title;
+
 const formatDate = (d: Date) =>
   d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
 ---
 
-<BaseLayout title={`${post.data.title} — Nick Armstrong`} description={post.data.description ?? post.data.title}>
+<BaseLayout
+  title={tabTitle}
+  ogTitle={`${post.data.title} — Nick Armstrong`}
+  description={post.data.description ?? post.data.title}
+>
   <article class="prose">
     <h1>{post.data.title}</h1>
     <p class="meta">

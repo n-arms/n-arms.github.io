@@ -1,0 +1,33 @@
+---
+// Site-wide identity graph. `sameAs` must match the profile URLs linked from
+// the homepage (`rel="me"`), so search engines can merge the entities.
+const site = new URL('/', Astro.site ?? 'https://n-arms.github.io').href;
+
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Nick Armstrong',
+  url: site,
+  jobTitle: 'Computer Engineering Student',
+  description:
+    'Computer engineering student at the University of Waterloo working on embedded systems, firmware, tinyML, and robotics.',
+  alumniOf: {
+    '@type': 'CollegeOrUniversity',
+    name: 'University of Waterloo',
+  },
+  knowsAbout: [
+    'Embedded systems',
+    'Firmware',
+    'tinyML',
+    'Robotics',
+    'CAN bus',
+    'High performance computing',
+  ],
+  sameAs: [
+    'https://www.linkedin.com/in/nick-armstrong-eng/',
+    'https://github.com/n-arms',
+  ],
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(person)} />

@@ -6,6 +6,7 @@
    ```md
    ---
    title: "Post title"
+   seoKeywords: "Cortex-M0+ Assembly Summing"  # optional, appended to tab/Google title
    description: "One-liner (shown on /blog only)"
    pubDate: 2026-10-19
    tags: ["embedded"]  # optional

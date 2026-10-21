@@ -4,6 +4,9 @@ import '@fontsource/inter/latin-600.css';
 import inter400 from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
 import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
 import { getCollection } from 'astro:content';
+import PersonJsonLd from '../components/PersonJsonLd.astro';
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://n-arms.github.io');
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const recentPosts = allPosts
@@ -20,7 +23,9 @@ const recentPosts = allPosts
     <meta property="og:title" content="Nick Armstrong" />
     <meta property="og:description" content="Computer engineering student at Waterloo. Embedded/firmware, tinyML, robotics, and high performance compute." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://n-arms.github.io/" />
+    <meta property="og:url" content={canonicalURL.href} />
+    <link rel="canonical" href={canonicalURL.href} />
+    <PersonJsonLd />
     <meta property="og:image" content="https://n-arms.github.io/drone-leds.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -28,23 +33,23 @@ const recentPosts = allPosts
     <link rel="preload" as="font" type="font/woff2" crossorigin href={inter400} />
     <link rel="preload" as="font" type="font/woff2" crossorigin href={inter600} />
     <meta name="generator" content={Astro.generator} />
-    <title>Nick Armstrong</title>
+    <title>Nick Armstrong (Embedded Systems &amp; Firmware, Waterloo)</title>
   </head>
   <body>
     <main>
       <div id="header">
         <h1>Nick Armstrong</h1>
         <div id="links">
-          <a href="https://www.linkedin.com/in/nick-armstrong-eng/" aria-label="Nick Armstrong on LinkedIn">
-            <img class="logo" src="/LinkedInLogo.png" alt="LinkedIn logo" width="96" height="96" />
+          <a href="https://www.linkedin.com/in/nick-armstrong-eng/" rel="me" aria-label="Nick Armstrong on LinkedIn">
+            <img class="logo" src="/LinkedInLogo.png" alt="" width="96" height="96" />
           </a>
-          <a href="https://www.github.com/n-arms" aria-label="Nick Armstrong on GitHub">
-            <img class="logo" src="/GitHubLogo.png" alt="GitHub logo" width="96" height="96" />
+          <a href="https://github.com/n-arms" rel="me" aria-label="Nick Armstrong on GitHub">
+            <img class="logo" src="/GitHubLogo.png" alt="" width="96" height="96" />
           </a>
         </div>
       </div>
       <ul class="intro">
-        <li>Studying computer engineering at the University of Waterloo</li>
+        <li>Studying computer engineering at the University of Waterloo · <a href="/resume.pdf">Resume (PDF)</a></li>
         <li>Interested in embedded/firmware, tinyML, robotics, and high performance compute</li>
         <li>Interned at Onsemi and Ford Motors building performant embedded systems, and at Endex.ai building autonomous finance agents</li>
         <li>Always building something and down to chat!</li>
@@ -193,12 +198,15 @@ const recentPosts = allPosts
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
   }
 
   #links {
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
   }
 
   .logo {
@@ -209,6 +217,14 @@ const recentPosts = allPosts
 
   #links {
     gap: 0.75rem;
+  }
+
+  #links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.9rem;
+    text-decoration: none;
   }
 
   /* Writing list shares the same flush-left edge as section titles */
