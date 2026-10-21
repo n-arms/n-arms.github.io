@@ -5,3 +5,16 @@ dist/
 .DS_STORE
 .merlin
 !webpack.config.js
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.synctex*
+*.fls
+*.fdb_latexmk
+
+
+# Compiled resume in the repo root is a build artifact; the published copy
+# lives in public/resume.pdf
+/resume.pdf

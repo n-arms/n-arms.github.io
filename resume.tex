@@ -1,0 +1,237 @@
+%-------------------------
+% Resume in Latex
+% Author : Jake Gutierrez
+% Based off of: https://github.com/sb2nov/resume
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,9.5pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+
+%----------FONT OPTIONS----------
+% sans-serif
+% \usepackage[sfdefault]{FiraSans}
+% \usepackage[sfdefault]{roboto}
+% \usepackage[sfdefault]{noto-sans}
+% \usepackage[default]{sourcesanspro}
+
+% serif
+% \usepackage{CormorantGaramond}
+% \usepackage{charter}
+
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+% Pull the header toward the top edge, and lengthen the text block by the
+% same amount so the bottom edge stays put.
+\addtolength{\topmargin}{-12pt}
+\addtolength{\textheight}{12pt}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure that generate pdf is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeAskHeading}[2]{
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+%----------HEADING----------
+% \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
+%   \textbf{\href{http://sourabhbajaj.com/}{\Large Sourabh Bajaj}} & Email : \href{mailto:sourabh@sourabhbajaj.com}{sourabh@sourabhbajaj.com}\\
+%   \href{http://sourabhbajaj.com/}{http://www.sourabhbajaj.com} & Mobile : +1-123-456-7890 \\
+% \end{tabular*}
+
+\begin{center}
+    \textbf{\Huge \scshape Nick Armstrong} \\ \vspace{1pt}
+    \href{mailto:n2armstr@uwaterloo.ca}{\underline{n2armstr@uwaterloo.ca}} $|$ 
+    \href{https://www.linkedin.com/in/nick-armstrong-eng}{\underline{{linkedin.com/in/nick-armstrong-eng} }} $|$
+    \href{https://github.com/n-arms}{\underline{github.com/n-arms}}
+    \vspace*{-6pt} % tighten the gap down to \section{Experience} only
+\end{center}
+
+%-----------EXPERIENCE-----------
+\section{Experience}
+  \resumeSubHeadingListStart
+    \resumeProjectHeading
+      {\textbf{Embedded Software Development Intern} $|$ \emph{Onsemi}}{Sept. 2025 - Dec. 2025}
+      \resumeItemListStart
+        \resumeItem{Built a thread-safe SPI HAL using fine-grained locking and a deterministic job queue to arbitrate concurrent hardware access}
+        \resumeItem{Accelerated FPGA bring-up, analyzing Verilog \& register maps to write bare-metal driver code, bypassing hardware defects}
+        \resumeItem{Architected a custom co-operatively scheduled RTOS, designing for production-ready multitasking to an ultra low power MCU using less than 3 KB of ROM}
+        \resumeItem{Led discussions and delivered presentations to drive the design of a hardware-agnostic non-volatile memory stack, establishing a unified API to support diverse storage technologies including EEPROM, OTPM, and ReRAM}
+        \resumeItem{Implemented a high-performance CRC library, optimized with lookup tables and assembly-level tuning, performing as few as 1.25 memory loads per byte of data}
+        \resumeItem{Researched the JEDEC SFDP spec to implement a flash controller with dynamic runtime detection of device capabilities}
+      \resumeItemListEnd
+    \resumeProjectHeading
+      {\textbf{Drone Software Project Manager} $|$ \emph{\href{https://www.uwarg.com/}{\underline{WARG}}, 90+ member student design team}}{Sept. 2024 -- Present}
+      \resumeItemListStart
+        \resumeItem{Managed a 9-member team developing software to power a distributed network of microcontrollers on a unified CAN bus, using a decentralized leader election algorithm to provide a plug-and-play experience for the drone’s Flight Lighting System}
+        \resumeItem{Architected software to use embedded hardware acceleration techniques including DMA, interrupts, and hardware timers, to optimize performance}
+        \resumeItem{Debugged distributed software using GDB and network capture tools like logic analyzers and oscilloscopes}
+        \resumeItem{Led software development as project manager using project boards and PR-based workflows}
+      \resumeItemListEnd
+    \resumeProjectHeading
+      {\textbf{Software Engineering Intern} $|$ \emph{Endex}}{May 2026 -- Aug. 2026}
+      \resumeItemListStart
+        \resumeItem{Built financial agentic AI, backed by OpenAI}
+      \resumeItemListEnd
+    \resumeProjectHeading
+      {\textbf{Embedded Software Development Intern} $|$ \emph{Ford Motors Research \& Development Centre}}{Jan. 2025 -- Apr. 2025}
+      \resumeItemListStart
+        \resumeItem{Built a fault-tolerant parser for a binary logging file format, bypassing corrupted payload information to ensure reliable testing while tracking down bugs in other teams' logging tools using Wireshark}
+        \resumeItem{Redesigned a concurrent logging library using state machines to ensure thread safety and clarity}
+        \resumeItem{Analyzed the architecture of a massive codebase to create specialized SELinux policy files and improve security}
+        \resumeItem{Developed an embedded C++ hardware abstraction layer to enable testing via gTest and gMock}
+    \resumeItemListEnd
+  \resumeSubHeadingListEnd
+%-----------PROJECTS-----------
+\section{Projects}
+    \resumeSubHeadingListStart
+        \resumeProjectHeading
+          {\textbf{Low Power Semantic Visual SLAM} $|$ \emph{Rust, Assembly, SIMD, ESP32}}{June 2026 -- Present}
+          \resumeItemListStart
+            \resumeItem{Develop handwritten image processing kernels in assembly, using SIMD and minimizing data dependencies to eliminate pipeline hazards and 4x throughput}
+            \resumeItem{Fine-tuned and quantized image embeddings model in TensorFlow, optimizing for high-throughput ESP-NN inference}
+            \resumeItem{Developed a PnP RANSAC pipeline for robust camera localization, rejecting dynamic outliers}
+          \resumeItemListEnd
+    	\resumeProjectHeading
+			{\textbf{Closed Loop Stepper Motor ASIC} $|$ \emph{Verilog, TinyTapeout}}{}
+			\resumeItemListStart
+				\resumeItem{Build a FSM-based SPI peripheral, using best practices such as cascading flip-flops to avoid metastability issues}
+				\resumeItem{Implement an in-hardware PI controller using accumulators and power-of-2 coefficients to eliminate unnecessary MAC units}
+				\resumeItem{Implement motion planning math using a FSM, saving 4-5x area over the naive MACs and divide units}
+			\resumeItemListEnd
+      \resumeProjectHeading
+          {\textbf{Robotic Path Planning Library} $|$ \emph{Trajectory Planning, Kalman Filtering, PID}}{}
+          \resumeItemListStart
+            \resumeItem{Use RProp numerical optimization to generate optimal Hermite spline trajectories}
+            \resumeItem{Developed Kalman-filter based odometry and IMU-based sensor fusion to adaptively react to disturbances}
+          \resumeItemListEnd
+        \resumeProjectHeading
+          {\textbf{Point-of-Storage Telemetry Platform} $|$ \emph{C, STM32, GDB, Oscilloscope, DMM}}{Sept. 2024 -- Dec. 2024}
+          \resumeItemListStart
+            \resumeItem{Implemented a sensor driver using hardware timers and interrupts to minimize protocol overhead}
+            \resumeItem{Designed custom fault-tolerant embedded protocol using Hamming error correction and a reduced baud rate to enable robust communication over a 2-meter serial link }
+          \resumeItemListEnd
+      \resumeProjectHeading
+          {\textbf{Functional programming language compiler} $|$ \emph{Rust, LLVM}}{Dec. 2022 -- Present}
+          \resumeItemListStart
+            \resumeItem{Developed a to-LLVM compiler for a functional programming language using techniques including specialization, unboxing, and defunctionalization to maximize the language‘s performance }
+          \resumeItemListEnd
+          
+    \resumeSubHeadingListEnd
+
+
+%-----------PROGRAMMING SKILLS-----------
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Languages}{: C, Assembly, Verilog, C++, Rust, Zig, Python, Typescript, Go, Haskell, WGSL}\\
+     \textbf{Embedded}{: RTOS, DSP, Board Bring-up, FPGA/RTL debugging, ARM \& RISC-V MCUs, Oscilloscopes \& Logic Analyzers, DMMs, Altium, CAN/SPI/I2C/UART} \\
+     \textbf{Robotics}{: ROS, SLAM, State Estimation (EKF), Controls (PID, LQR), Trajectory Optimization (Splines, RRT) } \\
+     \textbf{Edge AI/ML}{: Model Architecture, SIMD/GPU acceleration, Computer Vision (CNNs, LSTMs), Quantization (QAT \& PTQ) } \\
+     \textbf{Cloud}{: SQL DBs, REST APIs, ORMs, AWS (S3, EC2, ECS, Lambda, RDS, Athena, Kinesis, etc), Protobuf, Zod}
+    }}
+ \end{itemize}
+%-----------EDUCATION-----------
+\iffalse
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeAskHeading
+      {\textbf{University of Waterloo}}{\emph{Waterloo, ON} $|$    2024 -- Present}
+        Bachelor of Applied Science in Computer Engineering - full first year scholarship
+  \resumeSubHeadingListEnd
+\fi
+\section{Education}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \item{\begin{title}
+      \small{\textbf{University of Waterloo $|$ \normalfont{\emph{Waterloo, ON}}}}
+    \end{title}}
+    \hfill 2024 -- Present
+
+
+    \small{Bachelor of Applied Science in Computer Engineering | 3.98 GPA}
+ \end{itemize}
+%-------------------------------------------
+\end{document}
+
