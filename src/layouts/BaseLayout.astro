@@ -113,9 +113,68 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://n-arms.g
     border: 1px solid #000;
     padding: 0.75rem;
     font-size: 0.85rem;
+    /* Fenced code is indented with tabs; 4 keeps them from rendering as two
+       indent levels next to asmdiff's `+` + 3 spaces gutter. */
+    tab-size: 4;
   }
 
   :global(.prose code) {
     font-size: 0.9em;
+  }
+
+  /* Standalone SIMD-add example in the summing post: its own line, set larger
+     and bolder than body text so the lane mapping is legible at a glance. */
+  :global(.prose .simd) {
+    margin: 1.25rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.4;
+    overflow-x: auto;
+  }
+
+  :global(.prose .simd code) {
+    font-size: 1em;
+  }
+
+  /* Lane colours for the SIMD-add example: the only colour on the site, and
+     only because it carries the byte-to-lane mapping. The number is the byte
+     index within the word (3 = most significant). Hues are spread wide and all
+     clear 3:1 on white, which is the AA threshold for text this size. */
+  :global(.prose .lane-3) {
+    color: #d1242f;
+  }
+
+  :global(.prose .lane-2) {
+    color: #0969da;
+  }
+
+  :global(.prose .lane-1) {
+    color: #d97706;
+  }
+
+  :global(.prose .lane-0) {
+    color: #15803d;
+  }
+
+  /* asmdiff blocks: unchanged lines recede, additions/removals read as such.
+     Shiki inlines a colour on every token span, so the diff colours have to
+     beat those with !important (context lines just fade via opacity). */
+  :global(.prose pre[data-language='asmdiff']) {
+    line-height: 1.5;
+  }
+
+  :global(.prose pre[data-language='asmdiff'] .diff-ctx) {
+    opacity: 0.45;
+  }
+
+  :global(.prose pre[data-language='asmdiff'] .diff-add),
+  :global(.prose pre[data-language='asmdiff'] .diff-add span) {
+    color: #7ee787 !important;
+  }
+
+  :global(.prose pre[data-language='asmdiff'] .diff-del),
+  :global(.prose pre[data-language='asmdiff'] .diff-del span) {
+    color: #ffa198 !important;
   }
 </style>
