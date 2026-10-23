@@ -58,3 +58,7 @@ cd - && git worktree remove --force /tmp/ghpages
 ```
 
 Only built files are overwritten, so legacy files on `gh-pages` (`Resume.pdf`, …) survive.
+
+Do not delete `google1967e332c6949426.html` from `gh-pages`: it is the Google
+Search Console verification file. It also lives in `public/`, so it ships on
+every deploy — keep both in sync if it is ever replaced.

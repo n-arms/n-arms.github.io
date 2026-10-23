@@ -85,13 +85,25 @@ the previous version, so live canonical/sitemap/robots are not live yet.
 
 Deploy with the workflow in `PUBLISHING.md`. The `cp -r dist/. /tmp/ghpages/`
 step copies the new `robots.txt`, `sitemap-*.xml`, and canonical/JSON-LD HTML.
-Do not delete `Resume.pdf` from `gh-pages`.
+Do not delete `Resume.pdf` or `google1967e332c6949426.html` from `gh-pages`.
+
+## ✅ Search Console verification
+
+`public/google1967e332c6949426.html` (GSC URL-prefix property
+`https://n-arms.github.io/`) is committed on `main` and deployed to `gh-pages`.
+Live check: `curl -s https://n-arms.github.io/google1967e332c6949426.html`.
+
+**This file must never be deleted** — if it 404s, the GSC property silently
+lapses. A Domain property is not possible here (no DNS control over
+`github.io`), so re-verify with a new file if the property is ever lost.
+
+Remaining owner steps: Sitemaps → submit `sitemap-index.xml`; URL Inspection →
+Request Indexing for `/`, `/blog/`, `/blog/sum-bytes-quickly/`.
 
 ## 🔴 P0 — outstanding
 
 | Item | Owner | Notes |
 |---|---|---|
-| Verify site in Google Search Console | you | Use an HTML file in `public/` or a meta tag. Then submit `/sitemap-index.xml`. |
 | Verify site in Bing Webmaster Tools | you | Can import from GSC. Submit the same sitemap. |
 | Confirm indexing | you | After deploy/submission, search `site:n-arms.github.io`; check GSC Coverage. |
 | Custom domain + `CNAME` | you | Biggest long-term lever. Update `site` in `astro.config.mjs`, add `CNAME` to `gh-pages`, and re-check canonical/sitemap/JSON-LD URLs. |
